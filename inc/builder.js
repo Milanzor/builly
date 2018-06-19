@@ -7,9 +7,13 @@ const builderProcesses = {};
 
 module.exports = {
 
-    builderFile: path.resolve(__dirname, '..', 'builders.json'),
+    builderFile: null,
+    initialize: function (configFile) {
+        this.builderFile = path.resolve(configFile);
+        this.deactivateAllBuilders();
+    },
     getBuilders: function () {
-        delete require.cache[require.resolve('../builders.json')];
+        delete require.cache[this.builderFile];
 
         try {
             return require(this.builderFile);
@@ -58,9 +62,16 @@ module.exports = {
 
     deactivateAllBuilders: function () {
         const builders = this.getBuilders();
+
+        if (Object.keys(builders).length === 0) {
+            return this.saveBuilders({});
+        }
+
         Object.keys(builders).forEach((builder_id) => {
             this.deactivateBuilder(builder_id);
         });
+
+        return true;
     },
 
     spawnBuilder: function (builder_id) {

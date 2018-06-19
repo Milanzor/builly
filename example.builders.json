@@ -2,6 +2,7 @@
     "project1": {
         "path": "./test-dirs/project1",
         "command": "yarn",
+        "install": false,
         "args": [
             "ping"
         ],
@@ -10,18 +11,10 @@
     "project2": {
         "path": "./test-dirs/project2",
         "command": "yarn",
+        "install": false,
         "args": [
             "ping"
         ],
         "active": 0
-    },
-    "c3i": {
-        "path": "/mnt/data/Sites/c3i.codingkorner.com",
-        "command": "yarn",
-        "install": true,
-        "args": [
-            "watch"
-        ],
-        "active": 1
     }
 }

@@ -1,41 +1,49 @@
-<h5 class="card-title">Welcome to {{title}}</h5>
-<table class="table">
-    <thead>
-    <tr>
-        <th scope="col">ID</th>
-        <th scope="col">Path</th>
-        <th scope="col">Command</th>
-        <th scope="col">State</th>
-        <th scope="col"></th>
-    </tr>
-    </thead>
-    <tbody>
-    {{#each builders}}
+<div class="container">
+    <div class="card">
+        <div class="card-body">
+            {{#if hasBuilders}}
+                <table class="table">
+                    <thead class="">
+                    <tr>
+                        <th scope="col">ID</th>
+                        <th scope="col">Path</th>
+                        <th scope="col">Command</th>
+                        <th scope="col">State</th>
+                        <th scope="col"></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {{#each builders}}
 
-        <tr>
-            <td width="1%">{{@key}}</td>
-            <td width="25%">{{this.path}}</td>
-            <td width="10%">
-                {{this.command}} {{this.args}}
-            </td>
-            <td width="5%">
-                {{#if this.active}}
-                    Active
-                {{else}}
-                    Inactive
-                {{/if}}
-            </td>
-            <td class="text-right">
-                {{#if this.active}}
-                    <a href="/view/{{@key}}" class="btn btn-primary btn-sm p-1">View</a>
-                    <a href="/deactivate/{{@key}}" class="btn btn-primary btn-sm p-1">Deactivate</a>
-                {{else}}
-                    <a href="/activate/{{@key}}" class="btn btn-primary btn-sm p-1">Activate</a>
-                {{/if}}
-            </td>
-        </tr>
-    {{/each}}
+                        <tr {{#if this.active}}class="table-success"{{/if}}>
+                            <td width="1%">{{@key}}</td>
+                            <td width="35%">{{this.path}}</td>
+                            <td width="35%">
+                                {{this.command}} {{this.args}}
+                            </td>
+                            <td width="5%">
+                                {{#if this.active}}
+                                    Active
+                                {{else}}
+                                    Inactive
+                                {{/if}}
+                            </td>
+                            <td class="text-right">
+                                {{#if this.active}}
+                                    <a href="/deactivate/{{@key}}" class="btn btn-primary btn-sm p-1">Deactivate</a>
+                                {{else}}
+                                    <a href="/activate/{{@key}}" class="btn btn-primary btn-sm p-1">Activate</a>
+                                {{/if}}
+                            </td>
+                        </tr>
+                    {{/each}}
 
 
-    </tbody>
-</table>
+                    </tbody>
+                </table>
+            {{else}}
+                <h2 class="card-subtitle">It seems you have no builders configured in your config file!</h2>
+            {{/if}}
+        </div>
+    </div>
+</div>
