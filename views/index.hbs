@@ -4,7 +4,8 @@
     <tr>
         <th scope="col">ID</th>
         <th scope="col">Path</th>
-        <th scope="col">Active</th>
+        <th scope="col">Command</th>
+        <th scope="col">State</th>
         <th scope="col"></th>
     </tr>
     </thead>
@@ -12,17 +13,25 @@
     {{#each builders}}
 
         <tr>
-            <td>{{@key}}</td>
-            <td>{{this.path}}</td>
-            <td>
+            <td width="1%">{{@key}}</td>
+            <td width="25%">{{this.path}}</td>
+            <td width="10%">
+                {{this.command}} {{this.args}}
+            </td>
+            <td width="5%">
                 {{#if this.active}}
                     Active
                 {{else}}
                     Inactive
                 {{/if}}
             </td>
-            <td>
-                <a href="/builder/{{@key}}" class="btn btn-primary btn-sm p-1">Open</a>
+            <td class="text-right">
+                {{#if this.active}}
+                    <a href="/view/{{@key}}" class="btn btn-primary btn-sm p-1">View</a>
+                    <a href="/deactivate/{{@key}}" class="btn btn-primary btn-sm p-1">Deactivate</a>
+                {{else}}
+                    <a href="/activate/{{@key}}" class="btn btn-primary btn-sm p-1">Activate</a>
+                {{/if}}
             </td>
         </tr>
     {{/each}}
