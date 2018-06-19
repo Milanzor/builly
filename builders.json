@@ -1,0 +1,10 @@
+{
+  "project1": {
+    "path": "/srv/vhosts/dev/milan.hw/test-dirs/project1",
+    "active": 0
+  },
+  "project2": {
+    "path": "/srv/vhosts/dev/milan.hw/test-dirs/project2",
+    "active": 0
+  }
+}
