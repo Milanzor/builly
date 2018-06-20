@@ -29,12 +29,15 @@
                                 {{/if}}
                             </td>
                             <td class="text-right">
-                                {{#if this.active}}
-                                    <a href="/view/{{@key}}" class="btn btn-primary btn-sm p-1">View</a>
-                                    <a href="/deactivate/{{@key}}" class="btn btn-primary btn-sm p-1">Deactivate</a>
-                                {{else}}
-                                    <a href="/activate/{{@key}}" class="btn btn-primary btn-sm p-1">Activate</a>
-                                {{/if}}
+                                <div class="btn-group" role="group" aria-label="Basic example">
+                                    {{#if this.active}}
+                                        <a href="/view/{{@key}}" class="btn btn-flat-primary">View</a>
+                                        <a href="/deactivate/{{@key}}" class="btn btn-flat-primary">Deactivate</a>
+                                    {{else}}
+                                        <a href="/activate/{{@key}}" class="btn btn-flat-primary">Activate</a>
+                                    {{/if}}
+                                </div>
+
                             </td>
                         </tr>
                     {{/each}}
