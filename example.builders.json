@@ -16,5 +16,14 @@
             "ping"
         ],
         "active": 0
+    },
+    "c3i": {
+        "path": "/srv/vhosts/dev/c3i.hw/",
+        "command": "yarn",
+        "install": false,
+        "args": [
+            "watch"
+        ],
+        "active": 1
     }
 }

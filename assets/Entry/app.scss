@@ -1,4 +1,5 @@
-@import '../../node_modules/daemonite-material/assets/scss/material.scss';
+@import '~daemonite-material/assets/scss/material.scss';
+@import '~xterm/dist/xterm.css';
 
 body {
     //noinspection CssOptimizeSimilarProperties
@@ -8,12 +9,24 @@ body {
 }
 
 .content {
-    position: absolute;
-    top: 56px;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    margin: 15vh 0 0 0;
+}
+
+#log {
+    background: black;
+    padding: 15px;
+    margin-bottom: 30px;
+    float: left;
+    width: 100%;
+    height: 60vh;
+    overflow-y: scroll;
+    p {
+        margin: 0;
+        color: white;
+        font-size: 14px;
+        font-family: monospace;
+        float: left;
+        width: 100%;
+        white-space: pre-wrap;
+    }
 }

@@ -3,21 +3,45 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "node ./bin/www"
+    "start": "node ./bin/www",
+    "example": "node ./bin/www --config ./example.builders.json",
+    "build": "webpack --progress",
+    "build:no-progress": "webpack",
+    "build:prod": "yarn build --env.env=prod",
+    "watch": "yarn build --watch",
+    "watch:dev": "yarn watch --env.env=dev",
+    "watch:prod": "yarn watch --env.env=prod"
   },
   "dependencies": {
+    "babel-core": "^6.26.3",
+    "babel-loader": "^7.1.4",
+    "babel-plugin-lodash": "^3.3.4",
+    "babel-plugin-transform-object-rest-spread": "^6.26.0",
+    "babel-preset-env": "^1.7.0",
     "cookie-parser": "~1.4.3",
+    "css-loader": "^0.28.11",
     "daemonite-material": "^4.1.1",
     "debug": "~2.6.9",
     "express": "~4.16.0",
     "express-ws-routes": "^1.1.0",
+    "file-loader": "^1.1.11",
     "hbs": "~4.0.1",
     "http-errors": "~1.6.2",
     "jquery": "^3.3.1",
+    "mini-css-extract-plugin": "^0.4.0",
     "minimist": "^1.2.0",
     "morgan": "~1.9.0",
+    "node-sass": "^4.9.0",
     "node-sass-middleware": "0.11.0",
     "pickadate": "^3.5.6",
-    "tree-kill": "^1.2.0"
+    "postcss-loader": "^2.1.5",
+    "sass-loader": "^7.0.3",
+    "socket.io": "^2.1.1",
+    "style-loader": "^0.21.0",
+    "tree-kill": "^1.2.0",
+    "webpack": "^4.12.0",
+    "webpack-cli": "^3.0.8",
+    "webpack-watched-glob-entries-plugin": "^2.1.2",
+    "xterm": "^3.4.1"
   }
 }

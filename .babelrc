@@ -1,0 +1,66 @@
+{
+    "env": {
+        "development": {
+            "plugins": [
+                "lodash"
+            ],
+            "presets": [
+                [
+                    "babel-preset-env",
+                    {
+                        "useBuiltIns": "entry",
+                        "debug": false,
+                        "modules": false,
+                        "targets": {
+                            "browsers": [
+                                "last 2 versions",
+                                "ie 10"
+                            ]
+                        }
+                    }
+                ]
+            ]
+        },
+        "production": {
+            "plugins": [
+                "lodash"
+            ],
+            "presets": [
+                [
+                    "babel-preset-env",
+                    {
+                        "useBuiltIns": "entry",
+                        "debug": false,
+                        "modules": false,
+                        "targets": {
+                            "browsers": [
+                                "last 2 versions",
+                                "ie 10"
+                            ]
+                        }
+                    }
+                ]
+            ]
+        },
+        "test": {
+            "plugins": [
+                "lodash"
+            ],
+            "presets": [
+                [
+                    "babel-preset-env",
+                    {
+                        "useBuiltIns": "entry",
+                        "debug": false,
+                        "targets": {
+                            "browsers": [
+                                "last 2 versions",
+                                "ie 10"
+                            ]
+                        }
+                    }
+                ]
+            ]
+        }
+    }
+}

@@ -29,7 +29,7 @@ module.exports = {
             return builders[builder_id];
         }
 
-        return false
+        return false;
     },
 
     saveBuilders: function (builders) {
@@ -87,15 +87,39 @@ module.exports = {
             console.log(`Finished installing packages`);
         }
 
+        const builderProcess = spawn(builder.command, builder.args, {cwd: builder.path, shell: true});
 
-        const builderProcess = spawn(builder.command, builder.args, {cwd: builder.path, shell: true, stdio: 'inherit'});
+        builderProcess.log = [];
 
+        builderProcess.stdout.on('data', (data) => {
+            builderProcess.log.push(data);
+            process.stdout.write(data);
+        });
+
+        builderProcess.stderr.on('data', (data) => {
+            builderProcess.log.push(data);
+            process.stdout.write(data);
+        });
+
+        //
         builderProcess.on('close', (code) => {
-            process.stdout.write(`BUILBO: ${builder_id} closed with code ${code}`);
+            let msg = `BUILBO: ${builder_id} closed with code ${code}`;
+            builderProcess.log.push(msg);
+            process.stdout.write(msg);
             this.deactivateBuilder(builder_id);
         });
 
+        // Clear the log every 60 minutes
+        setInterval(() => {
+            builderProcess.log = [];
+            builderProcess.log.push(`BUILBO: Log cleared for performance reasons`);
+        }, 60e3 * 60);
+
         builderProcesses[builder_id] = builderProcess;
+    },
+
+    getBuilderProcess: function (builder_id) {
+        return builder_id in builderProcesses ? builderProcesses[builder_id] : false;
     }
 
 };

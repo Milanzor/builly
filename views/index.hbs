@@ -30,6 +30,7 @@
                             </td>
                             <td class="text-right">
                                 {{#if this.active}}
+                                    <a href="/view/{{@key}}" class="btn btn-primary btn-sm p-1">View</a>
                                     <a href="/deactivate/{{@key}}" class="btn btn-primary btn-sm p-1">Deactivate</a>
                                 {{else}}
                                     <a href="/activate/{{@key}}" class="btn btn-primary btn-sm p-1">Activate</a>
@@ -42,7 +43,7 @@
                     </tbody>
                 </table>
             {{else}}
-                <h2 class="card-subtitle">It seems you have no builders configured in your config file!</h2>
+                <h5 class="text-center">It seems you have no builders configured in your config file!</h5>
             {{/if}}
         </div>
     </div>
