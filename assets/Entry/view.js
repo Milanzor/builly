@@ -13,7 +13,7 @@ document.addEventListener("DOMContentLoaded", function () {
         // Log line
         socket.on('builder-log-line', function (logLine) {
             var logP = document.createElement('p');
-            logP.innerHTML = logLine.replace(/(?:\r\n|\r|\n)/g, '<br>').replace(/[^a-z0-9 ,.?!%\[\]\/+{}\-<>]/ig, '').trim();
+            logP.innerHTML = logLine.replace(/(?:\r\n|\r|\n)/g, '<br>').replace(/[^a-z0-9 ,.?!%\[\]\/+{}\-<>:;]/ig, '').trim();
             document.getElementById('log').appendChild(logP);
             document.getElementById('log').scrollTo(0, document.getElementById('log').scrollHeight);
         });
