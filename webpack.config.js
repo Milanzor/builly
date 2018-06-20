@@ -22,7 +22,7 @@ module.exports = (env) => {
     return {
 
         // Devtool
-        devtool: 'source-map',
+        devtool: env.env === 'dev' ? 'source-map' : false,
 
         // Entries
         entry: WebpackWatchedGlobEntries.getEntries(path.resolve(__dirname, 'assets', 'Entry', '**', '*.{js,scss}')),

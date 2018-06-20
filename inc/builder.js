@@ -87,7 +87,7 @@ module.exports = {
             console.log(`Finished installing packages`);
         }
 
-        const builderProcess = spawn(builder.command, builder.args, {cwd: builder.path, shell: true});
+        const builderProcess = spawn(builder.command, builder.args, {cwd: builder.path});
 
         builderProcess.log = [];
 

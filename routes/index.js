@@ -4,6 +4,8 @@ const express = require('express');
 // Get command line options
 const argv = require('minimist')(process.argv.slice(2));
 const configFile = 'config' in argv ? argv.config : './builders.json';
+const Convert = require('ansi-to-html');
+const ansiConverter = new Convert();
 
 // Get builder interface
 const builder = require('../inc/builder');
@@ -48,17 +50,18 @@ module.exports = function (io) {
             let builderProcess = builder.getBuilderProcess(data.builder_id);
 
             if (builderProcess.log.length) {
+
                 builderProcess.log.forEach(function (logLine) {
-                    socket.emit('builder-log-line', logLine.toString());
+                    socket.emit('builder-log-line', ansiConverter.toHtml(logLine.toString()));
                 });
             }
 
             builderProcess.stdout.on('data', (data) => {
-                socket.emit('builder-log-line', data.toString());
+                socket.emit('builder-log-line', ansiConverter.toHtml(data.toString()));
             });
 
             builderProcess.stderr.on('data', (data) => {
-                socket.emit('builder-log-line', data.toString());
+                socket.emit('builder-log-line', ansiConverter.toHtml(data.toString()));
             });
 
             builderProcess.on('close', (code) => {
