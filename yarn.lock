@@ -3050,6 +3050,10 @@ map-visit@^1.0.0:
   dependencies:
     object-visit "^1.0.0"
 
+material-design-icons-iconfont-only@^3.0.1:
+  version "3.0.1"
+  resolved "https://registry.yarnpkg.com/material-design-icons-iconfont-only/-/material-design-icons-iconfont-only-3.0.1.tgz#cc1344c7d00b752e161dc4f6371662146bad1672"
+
 math-expression-evaluator@^1.2.14:
   version "1.2.17"
   resolved "https://registry.yarnpkg.com/math-expression-evaluator/-/math-expression-evaluator-1.2.17.tgz#de819fdbcd84dccd8fae59c6aeb79615b9d266ac"
@@ -4739,6 +4743,10 @@ stdout-stream@^1.4.0:
   resolved "https://registry.yarnpkg.com/stdout-stream/-/stdout-stream-1.4.0.tgz#a2c7c8587e54d9427ea9edb3ac3f2cd522df378b"
   dependencies:
     readable-stream "^2.0.1"
+
+stein@^1.0.5:
+  version "1.0.5"
+  resolved "https://registry.yarnpkg.com/stein/-/stein-1.0.5.tgz#b7f4eeb65e66107e3071ec7edaa547f61caf0691"
 
 stream-browserify@^2.0.1:
   version "2.0.1"

@@ -7,6 +7,6 @@
     "jquery": "^3.3.1"
   },
   "scripts": {
-    "ping": "ping google.com -c 5"
+    "ping": "ping google.com"
   }
 }

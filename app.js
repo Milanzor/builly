@@ -7,7 +7,7 @@ const logger = require('morgan');
 const app = express();
 app.io = require('socket.io')();
 
-const indexRouter = require('./routes/index')(app.io);
+const indexRouter = require('./routes/index')(app);
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));

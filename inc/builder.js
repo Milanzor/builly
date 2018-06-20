@@ -2,7 +2,8 @@ const fs = require('fs');
 const path = require('path');
 const {spawn, spawnSync} = require('child_process');
 const kill = require('tree-kill');
-
+const Convert = require('ansi-to-html');
+const ansiConverter = new Convert();
 const builderProcesses = {};
 
 module.exports = {
@@ -11,6 +12,19 @@ module.exports = {
     initialize: function (configFile) {
         this.builderFile = path.resolve(configFile);
         this.deactivateAllBuilders();
+        this.autoStart();
+    },
+
+    autoStart: function () {
+        let builders = this.getBuilders();
+
+        Object.keys(builders).forEach((builder_id) => {
+            if (builders.hasOwnProperty(builder_id)) {
+                if ('autostart' in builders[builder_id] && builders[builder_id].autostart) {
+                    this.spawnBuilder(builder_id);
+                }
+            }
+        });
     },
     getBuilders: function () {
         delete require.cache[this.builderFile];
@@ -40,7 +54,7 @@ module.exports = {
     activateBuilder: function (builder_id) {
         let builders = this.getBuilders();
         if (builder_id in builders) {
-            builders[builder_id].active = 1;
+            builders[builder_id].active = true;
             return this.saveBuilders(builders);
         }
     },
@@ -54,7 +68,7 @@ module.exports = {
                 delete builderProcesses[builder_id];
             }
 
-            builders[builder_id].active = 0;
+            builders[builder_id].active = false;
             return this.saveBuilders(builders);
         }
         return false;
@@ -92,12 +106,12 @@ module.exports = {
         builderProcess.log = [];
 
         builderProcess.stdout.on('data', (data) => {
-            builderProcess.log.push(data);
+            builderProcess.log.push(ansiConverter.toHtml(data.toString()));
             process.stdout.write(data);
         });
 
         builderProcess.stderr.on('data', (data) => {
-            builderProcess.log.push(data);
+            builderProcess.log.push(ansiConverter.toHtml(data.toString()));
             process.stdout.write(data);
         });
 

@@ -11,62 +11,68 @@ const ansiConverter = new Convert();
 const builder = require('../inc/builder');
 builder.initialize(configFile);
 
-module.exports = function (io) {
+module.exports = function (app) {
     const router = express.Router();
     // Home page
     router.get('/', function (req, res, next) {
+
+
+        // Get all builders and output them
         let builders = builder.getBuilders();
         res.render('index', {title: 'Builbo', builders: builders, hasBuilders: !!Object.keys(builders).length});
     });
 
-    // Activate a builder
-    router.get('/activate/:builder', function (req, res, next) {
-        builder.spawnBuilder(req.params.builder);
-        res.redirect('/');
-    });
 
-    // Deactivate a builder
-    router.get('/deactivate/:builder', function (req, res, next) {
-        builder.deactivateBuilder(req.params.builder);
-        res.redirect('/');
-    });
+    app.io.on('connection', function (socket) {
 
-    // View a builder
-    router.get('/view/:builder', function (req, res, next) {
-        let currentBuilder = builder.getBuilder(req.params.builder);
-        if (!currentBuilder) {
-            res.status(404).send("Sorry can't find that!");
-        } else {
-            if (!currentBuilder.active) {
-                builder.spawnBuilder(req.params.builder);
-            }
+        socket.on('get-builder-details', function (data) {
+            let builderDetails = builder.getBuilder(data.builder_id);
+            app.render(
+                'templates/builder-details',
+                {
+                    builderDetails: builderDetails,
+                    builder_id: data.builder_id,
+                    layout: false,
+                },
+                function (error, renderedTemplate) {
+                    socket.emit('builder-details', {renderedTemplate: renderedTemplate, builder_id: data.builder_id, builderDetails: builderDetails})
+                }
+            );
+        });
 
-            res.render('view', {title: 'Builbo', builder: JSON.stringify({id: req.params.builder}, null, 4)});
-        }
-    });
+        socket.on('attach-log', function (data) {
 
-    io.on('connection', function (socket) {
-        socket.on('get-builder-log', function (data) {
-            let builderProcess = builder.getBuilderProcess(data.builder_id);
+            let builder_id = data.builder_id;
+            let builderProcess = builder.getBuilderProcess(builder_id);
 
             if (builderProcess.log.length) {
-
                 builderProcess.log.forEach(function (logLine) {
-                    socket.emit('builder-log-line', ansiConverter.toHtml(logLine.toString()));
+                    socket.emit('builder-log-line', {logLine: logLine, builder_id: builder_id});
                 });
             }
 
             builderProcess.stdout.on('data', (data) => {
-                socket.emit('builder-log-line', ansiConverter.toHtml(data.toString()));
+                socket.emit('builder-log-line', {logLine: ansiConverter.toHtml(data.toString()), builder_id: builder_id});
             });
 
             builderProcess.stderr.on('data', (data) => {
-                socket.emit('builder-log-line', ansiConverter.toHtml(data.toString()));
+                socket.emit('builder-log-line', {logLine: ansiConverter.toHtml(data.toString()), builder_id: builder_id});
             });
 
             builderProcess.on('close', (code) => {
-                socket.emit('builder-log-line', `Process closed with ${code}`);
+                socket.emit('builder-log-line', {logLine: `Process closed with ${code}`, builder_id: builder_id});
+                socket.emit('builder-deactivated', {builder_id: data.builder_id});
             });
+        });
+
+        socket.on('activate-builder', function (data) {
+            builder.spawnBuilder(data.builder_id);
+            socket.emit('builder-activated', {builder_id: data.builder_id});
+        });
+
+        socket.on('deactivate-builder', function (data) {
+            builder.deactivateBuilder(data.builder_id);
+            socket.emit('builder-deactivated', {builder_id: data.builder_id});
         });
 
     });

@@ -6,16 +6,17 @@
         "args": [
             "ping"
         ],
-        "active": 0
+        "active": false
     },
     "project2": {
         "path": "./test-dirs/project2",
         "command": "yarn",
         "install": false,
+        "autostart": true,
         "args": [
             "ping"
         ],
-        "active": 0
+        "active": true
     },
     "c3i": {
         "path": "/srv/vhosts/dev/c3i.hw/",
@@ -24,6 +25,6 @@
         "args": [
             "watch"
         ],
-        "active": 1
+        "active": false
     }
 }
