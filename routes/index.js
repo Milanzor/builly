@@ -22,7 +22,6 @@ module.exports = function (app) {
         res.render('index', {title: 'Builbo', builders: builders, hasBuilders: !!Object.keys(builders).length});
     });
 
-
     app.io.on('connection', function (socket) {
 
         socket.on('get-builder-details', function (data) {
@@ -35,7 +34,7 @@ module.exports = function (app) {
                     layout: false,
                 },
                 function (error, renderedTemplate) {
-                    socket.emit('builder-details', {renderedTemplate: renderedTemplate, builder_id: data.builder_id, builderDetails: builderDetails})
+                    socket.emit('builder-details', {renderedTemplate: renderedTemplate, builder_id: data.builder_id, builderDetails: builderDetails});
                 }
             );
         });
@@ -45,24 +44,32 @@ module.exports = function (app) {
             let builder_id = data.builder_id;
             let builderProcess = builder.getBuilderProcess(builder_id);
 
-            if (builderProcess.log.length) {
-                builderProcess.log.forEach(function (logLine) {
-                    socket.emit('builder-log-line', {logLine: logLine, builder_id: builder_id});
+            if (builderProcess) {
+
+                if (builderProcess.log.length) {
+                    builderProcess.log.forEach(function (logLine) {
+                        socket.emit('builder-log-line', {logLine: logLine, builder_id: builder_id});
+                    });
+                }
+
+                builderProcess.stdout.on('data', (data) => {
+                    socket.emit('builder-log-line', {logLine: ansiConverter.toHtml(data.toString()), builder_id: builder_id});
                 });
+
+                builderProcess.stderr.on('data', (data) => {
+                    socket.emit('builder-log-line', {logLine: ansiConverter.toHtml(data.toString()), builder_id: builder_id});
+                });
+
+                builderProcess.on('close', (code) => {
+                    socket.emit('builder-log-line', {logLine: `Process closed with ${code}`, builder_id: builder_id});
+                    socket.emit('builder-deactivated', {builder_id: data.builder_id});
+                });
+            } else {
+                socket.emit('builder-deactivated', {builder_id: data.builder_id});
+                socket.emit('builder-log-line', {logLine: 'Error launching builder, please check the Builbo logs', builder_id: builder_id});
+
             }
 
-            builderProcess.stdout.on('data', (data) => {
-                socket.emit('builder-log-line', {logLine: ansiConverter.toHtml(data.toString()), builder_id: builder_id});
-            });
-
-            builderProcess.stderr.on('data', (data) => {
-                socket.emit('builder-log-line', {logLine: ansiConverter.toHtml(data.toString()), builder_id: builder_id});
-            });
-
-            builderProcess.on('close', (code) => {
-                socket.emit('builder-log-line', {logLine: `Process closed with ${code}`, builder_id: builder_id});
-                socket.emit('builder-deactivated', {builder_id: data.builder_id});
-            });
         });
 
         socket.on('activate-builder', function (data) {

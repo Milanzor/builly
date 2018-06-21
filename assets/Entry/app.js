@@ -2,7 +2,6 @@ import io from 'socket.io-client';
 import '../Style/app.scss';
 import { AppModule } from "../Lib/AppModule";
 
-
 class BuilboFrontend extends AppModule {
 
     /**
@@ -62,7 +61,6 @@ class BuilboFrontend extends AppModule {
 
         let logContainer = document.getElementById('logContainer');
         this._clearLog();
-
 
         if (data.builderDetails.active) {
             this.attachLog(data.builder_id);

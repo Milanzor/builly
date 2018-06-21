@@ -89,47 +89,58 @@ module.exports = {
     },
 
     spawnBuilder: function (builder_id) {
+
         if (!this.activateBuilder(builder_id)) {
             return false;
         }
 
         const builder = this.getBuilder(builder_id);
-
-        if (builder.install) {
-            console.log(`Running yarn install for builder ${builder_id}`);
-            spawn('yarn', ['install'], {cwd: builder.path, shell: true, stdio: 'inherit'});
-            console.log(`Finished installing packages`);
+        if (!fs.existsSync(builder.path)) {
+            console.log(`Builder path ${builder.path} for ${builder_id} does not exist`);
+            this.deactivateBuilder(builder_id);
+            return false;
         }
 
-        const builderProcess = spawn(builder.command, builder.args, {cwd: builder.path});
+        try {
 
-        builderProcess.log = [];
+            let log = [];
+            if ('install' in builder && builder.install) {
+                log.push(`Running yarn install for builder ${builder_id}`);
+                spawn('yarn', ['install'], {cwd: builder.path, shell: true, stdio: 'inherit'});
+                log.push(`Finished running yarn install packages`);
+            }
 
-        builderProcess.stdout.on('data', (data) => {
-            builderProcess.log.push(ansiConverter.toHtml(data.toString()));
-            process.stdout.write(data);
-        });
+            const builderProcess = spawn(builder.command, builder.args, {cwd: builder.path});
 
-        builderProcess.stderr.on('data', (data) => {
-            builderProcess.log.push(ansiConverter.toHtml(data.toString()));
-            process.stdout.write(data);
-        });
+            builderProcess.stdout.on('data', (data) => {
+                log.push(ansiConverter.toHtml(data.toString()));
+                // process.stdout.write(data);
+            });
 
-        //
-        builderProcess.on('close', (code) => {
-            let msg = `BUILBO: ${builder_id} closed with code ${code}`;
-            builderProcess.log.push(msg);
-            process.stdout.write(msg);
-            this.deactivateBuilder(builder_id);
-        });
+            builderProcess.stderr.on('data', (data) => {
+                log.push(ansiConverter.toHtml(data.toString()));
+                // process.stdout.write(data);
+            });
 
-        // Clear the log every 60 minutes
-        setInterval(() => {
-            builderProcess.log = [];
-            builderProcess.log.push(`BUILBO: Log cleared for performance reasons`);
-        }, 60e3 * 60);
+            //
+            builderProcess.on('close', (code) => {
+                let msg = `BUILBO: ${builder_id} closed with code ${code}`;
+                log.push(msg);
+                // process.stdout.write(msg);
+                this.deactivateBuilder(builder_id);
+            });
 
-        builderProcesses[builder_id] = builderProcess;
+            // Clear the log every 60 minutes
+            setInterval(() => {
+                log = [];
+                log.push(`BUILBO: Log cleared for performance reasons`);
+            }, 60e3 * 60);
+
+            builderProcess.log = log;
+            builderProcesses[builder_id] = builderProcess;
+        } catch (e) {
+            console.log(`Error spawning builder ${builder_id}`);
+        }
     },
 
     getBuilderProcess: function (builder_id) {
