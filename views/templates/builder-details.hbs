@@ -16,15 +16,15 @@
                 <td width="20%">Path</td>
                 <td><span class="font-weight-bold">{{builderDetails.path}}</span></td>
             </tr>
-            <tr>{{log builderDetails}}
+            <tr>
                 <td width="20%">Command</td>
                 <td><span class="font-weight-bold">{{builderDetails.command}}</span></td>
             </tr>
-            <tr>{{log builderDetails}}
+            <tr>
                 <td width="20%">Arguments</td>
                 <td><span class="font-weight-bold">{{builderDetails.args}}</span></td>
             </tr>
-            <tr>{{log builderDetails}}
+            <tr>
                 <td width="20%">State</td>
                 <td><span class="font-weight-bold">{{#if builderDetails.active}}<span id="stateLabel{{builder_id}}" class="text-success">Online</span>{{else}}<span id="stateLabel{{builder_id}}" class="text-danger">Offline</span>{{/if}}</span></td>
             </tr>
