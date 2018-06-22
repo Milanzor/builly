@@ -11,7 +11,8 @@
     "build:no-progress": "webpack",
     "build:prod": "yarn build --env.env=prod",
     "watch": "yarn build --watch",
-    "watch:prod": "yarn watch --env.env=prod"
+    "watch:prod": "yarn watch --env.env=prod",
+    "travis": "yarn build:prod && yarn example &"
   },
   "dependencies": {
     "ansi-to-html": "^0.6.4",
