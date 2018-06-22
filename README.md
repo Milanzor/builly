@@ -9,8 +9,7 @@ Webinterface for your builders/bundlers (e.g. Webpack, Parcel, Rollup, Gulp, etc
 ## What
 Builbo starts a webinterface on port 3000 (default) 
 
-[![demo-gif][demo-gif]]
-
+![Demo gif](https://github.com/Milanzor/builbo/blob/master/docs/img/demo.gif?raw=true)
 
 
 
@@ -25,5 +24,3 @@ Builbo starts a webinterface on port 3000 (default)
 
 [downloads-week]: https://img.shields.io/npm/dw/builbo.svg
 [downloads-week-url]: https://www.npmjs.com/package/builbo
-
-[demo-gif]: https://github.com/Milanzor/builbo/blob/master/docs/img/demo.gif?raw=true
