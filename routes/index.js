@@ -4,8 +4,6 @@ const express = require('express');
 // Get command line options
 const argv = require('minimist')(process.argv.slice(2));
 const configFile = 'config' in argv ? argv.config : './builders.json';
-const Convert = require('ansi-to-html');
-const ansiConverter = new Convert();
 
 // Get builder interface
 const builder = require('../inc/builder');
@@ -106,7 +104,6 @@ module.exports = function (app) {
             // Error
             socket.emit('builder-error', {message: builderResult});
             socket.emit('builder-deactivated', {builder_id: data.builder_id});
-
 
         });
 

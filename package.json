@@ -12,7 +12,7 @@
     "build:prod": "yarn build --env.env=prod",
     "watch": "yarn build --watch",
     "watch:prod": "yarn watch --env.env=prod",
-    "travis": "yarn build:prod && yarn example &"
+    "travis": "yarn build:prod && yarn example --travistest"
   },
   "dependencies": {
     "ansi-to-html": "^0.6.4",
