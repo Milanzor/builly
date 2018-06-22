@@ -13,6 +13,9 @@ builder.initialize(configFile);
 
 module.exports = function (app) {
     const router = express.Router();
+
+    let activeBuilderId = null;
+
     // Home page
     router.get('/', function (req, res, next) {
 
@@ -22,9 +25,17 @@ module.exports = function (app) {
         res.render('index', {title: 'Builbo', builders: builders, hasBuilders: !!Object.keys(builders).length});
     });
 
+    // Initial connection
     app.io.on('connection', function (socket) {
 
+        let currentBuilder = null;
+
+        // Get builder details socket event
         socket.on('get-builder-details', function (data) {
+
+            // Set current builder
+            currentBuilder = data.builder_id;
+
             let builderDetails = builder.getBuilder(data.builder_id);
             app.render(
                 'templates/builder-details',
@@ -39,6 +50,7 @@ module.exports = function (app) {
             );
         });
 
+        // Attach log socket event
         socket.on('attach-log', function (data) {
 
             let builder_id = data.builder_id;
@@ -46,40 +58,70 @@ module.exports = function (app) {
 
             if (builderProcess) {
 
-                if (builderProcess.log.length) {
-                    builderProcess.log.forEach(function (logLine) {
-                        socket.emit('builder-log-line', {logLine: logLine, builder_id: builder_id});
-                    });
-                }
-
-                builderProcess.stdout.on('data', (data) => {
-                    socket.emit('builder-log-line', {logLine: ansiConverter.toHtml(data.toString()), builder_id: builder_id});
+                // Bind the log event
+                builderProcess.on('log', function (data) {
+                    socket.emit('builder-log-line', {logLine: data.logLine, builder_id: builder_id});
                 });
-
-                builderProcess.stderr.on('data', (data) => {
-                    socket.emit('builder-log-line', {logLine: ansiConverter.toHtml(data.toString()), builder_id: builder_id});
-                });
-
-                builderProcess.on('close', (code) => {
-                    socket.emit('builder-log-line', {logLine: `Process closed with ${code}`, builder_id: builder_id});
+                builderProcess.on('builder-deactivated', function (data) {
                     socket.emit('builder-deactivated', {builder_id: data.builder_id});
                 });
             } else {
+                // Builder is deactivated, it failed to start
                 socket.emit('builder-deactivated', {builder_id: data.builder_id});
                 socket.emit('builder-log-line', {logLine: 'Error launching builder, please check the Builbo logs', builder_id: builder_id});
-
             }
 
         });
 
-        socket.on('activate-builder', function (data) {
-            builder.spawnBuilder(data.builder_id);
-            socket.emit('builder-activated', {builder_id: data.builder_id});
+        // Flush all log lines to the frontend
+        socket.on('fetch-log', function (data) {
+
+            let builder_id = data.builder_id;
+            let builderProcess = builder.getBuilderProcess(builder_id);
+
+            if (builderProcess) {
+
+                // Flush all log lines to the frontend
+                if (builderProcess.log.length) {
+                    builderProcess.log.forEach(function (logLine) {
+                        socket.emit('builder-log-line', {logLine: logLine, builder_id: builder_id, flush: true});
+                    });
+                }
+            }
         });
 
-        socket.on('deactivate-builder', function (data) {
-            builder.deactivateBuilder(data.builder_id);
+        // Activate builder socket event
+        socket.on('activate-builder', function (data) {
+
+            // Spawn the builder
+            let builderResult = builder.spawnBuilder(data.builder_id);
+
+            // Error check
+            if (builderResult === true) {
+                // All is fine
+                socket.emit('builder-activated', {builder_id: data.builder_id});
+                return true;
+            }
+
+            // Error
+            socket.emit('builder-error', {message: builderResult});
             socket.emit('builder-deactivated', {builder_id: data.builder_id});
+
+
+        });
+
+        // Deactivate builder socket event
+        socket.on('deactivate-builder', function (data) {
+            if (builder.deactivateBuilder(data.builder_id)) {
+                socket.emit('builder-deactivated', {builder_id: data.builder_id});
+            } else {
+                socket.emit('builder-error', {message: 'Failed to deactivate builder. Builder not found.'});
+            }
+        });
+
+        // Cleanup
+        socket.on('disconnect', function () {
+            socket.removeAllListeners(['get-builder-details', 'attach-log', 'activate-builder', 'deactivate-builder']);
         });
 
     });

@@ -1,6 +1,8 @@
 import io from 'socket.io-client';
 import '../Style/app.scss';
 import { AppModule } from "../Lib/AppModule";
+import { Snackbar } from 'daemonite-material-additions';
+import Log from '../Lib/Log';
 
 class BuilboFrontend extends AppModule {
 
@@ -11,21 +13,30 @@ class BuilboFrontend extends AppModule {
         super();
         this.socket = io.connect(window.location.origin);
         this.active_builder_id = null;
+        this.attached_logs = [];
 
+        // Socket events
         this.socket.on('builder-details', (data) => {
             this.builderDetails(data);
         });
+
         this.socket.on('builder-activated', (data) => {
-            this.attachLog(data.builder_id);
+            this.attachLog();
             this.builderIsActivated(data.builder_id);
         });
+
         this.socket.on('builder-deactivated', (data) => {
             this.builderIsDeactivated(data.builder_id);
         });
+
         this.socket.on('builder-log-line', (data) => {
-            if (data.builder_id === this.active_builder_id || this.active_builder_id === null) {
-                this.appendLogLine(data.logLine);
+            if (data.builder_id === this.active_builder_id || ('flush' in data && data.flush)) {
+                this.Log.appendLine(data.logLine);
             }
+        });
+
+        this.socket.on('builder-error', (data) => {
+            this.builderError(data.message);
         });
 
     }
@@ -35,15 +46,28 @@ class BuilboFrontend extends AppModule {
      * @constructor
      */
     DOMReady() {
+
+        // Initialize the LogInterface
+        this.Log = new Log;
+
         const self = this;
 
+        // Bind the builder selectors
         let allBuilderSelectors = document.querySelectorAll('[data-select-builder]');
         allBuilderSelectors.forEach((builderSelectorDiv) => {
+
             builderSelectorDiv.addEventListener('click', function () {
+
+                if (this.classList.contains('opened')) {
+                    return false;
+                }
+
                 self.socket.emit('get-builder-details', {builder_id: this.getAttribute('data-select-builder')});
+
                 allBuilderSelectors.forEach(function (el) {
                     el.classList.remove('opened');
                 });
+
                 this.classList.add('opened');
             });
         });
@@ -54,29 +78,36 @@ class BuilboFrontend extends AppModule {
      * @param data
      */
     builderDetails(data) {
+
+
+        // Context
         const self = this;
+
+        // Set the active builder
         this.active_builder_id = data.builder_id;
+
+        // Render the template inside the builderContainer
         let builderContainer = document.getElementById('builderContainer');
         builderContainer.innerHTML = data.renderedTemplate;
 
-        let logContainer = document.getElementById('logContainer');
-        this._clearLog();
+        // Clear the log
+        this.Log.clear();
 
+        // If the requested builder is active, attach the log
         if (data.builderDetails.active) {
-            this.attachLog(data.builder_id);
-            logContainer.classList.remove('hidden');
+            this.attachLog();
+            this.Log.show();
         } else {
-            logContainer.classList.add('hidden');
+            this.Log.hide();
         }
 
+        // Bind click on spawning the builder
         document.getElementById(`builderSwitch${data.builder_id}`).addEventListener('click', function () {
             if (this.checked) {
                 self.activateBuilder(data.builder_id);
-                logContainer.classList.remove('hidden');
-
             } else {
                 self.deactivateBuilder(data.builder_id);
-                logContainer.classList.add('hidden');
+                self.Log.hide();
             }
         });
     }
@@ -87,7 +118,7 @@ class BuilboFrontend extends AppModule {
      */
     activateBuilder(builder_id) {
         this.socket.emit('activate-builder', {builder_id: builder_id});
-        this._clearLog();
+        this.Log.clear();
     }
 
     /**
@@ -103,18 +134,18 @@ class BuilboFrontend extends AppModule {
      * @param builder_id
      */
     builderIsDeactivated(builder_id) {
-        try {
-            let stateLabel = document.getElementById(`stateLabel${builder_id}`);
-            stateLabel.classList.remove('text-success');
-            stateLabel.classList.add('text-danger');
-            stateLabel.innerText = 'Offline';
+        this.attached_logs.splice(this.attached_logs.indexOf(builder_id), 1);
 
-            document.getElementById(`builderSwitch${builder_id}`).checked = false;
-            document.getElementById(`builderSelector${builder_id}`).classList.remove('active');
-
-        } catch (e) {
-
+        let builderSelector = document.getElementById(`builderSelector${builder_id}`);
+        if (builderSelector) {
+            builderSelector.classList.remove('active');
         }
+
+        let builderSwitcher = document.getElementById(`builderSwitch${builder_id}`);
+        if (builderSwitcher) {
+            builderSwitcher.checked = false;
+        }
+
     }
 
     /**
@@ -122,46 +153,39 @@ class BuilboFrontend extends AppModule {
      * @param builder_id
      */
     builderIsActivated(builder_id) {
-        try {
-            let stateLabel = document.getElementById(`stateLabel${builder_id}`);
-            stateLabel.classList.remove('text-danger');
-            stateLabel.classList.add('text-success');
-            stateLabel.innerText = 'Online';
-            document.getElementById(`builderSwitch${builder_id}`).checked = true;
-            document.getElementById(`builderSelector${builder_id}`).classList.add('active');
-        } catch (e) {
 
+        // If we're looking at the active builder when activate
+        if (this.active_builder_id === builder_id) {
+            this.Log.show();
+
+            let builderSelector = document.getElementById(`builderSelector${builder_id}`);
+            if (builderSelector) {
+                builderSelector.classList.add('active');
+            }
+
+            let builderSwitcher = document.getElementById(`builderSwitch${builder_id}`);
+            if (builderSwitcher) {
+                builderSwitcher.checked = true;
+            }
         }
 
     }
 
     /**
      *
-     * @param builder_id
      */
-    attachLog(builder_id) {
-        this.socket.emit('attach-log', {builder_id: builder_id});
+    attachLog() {
+        this.socket.emit('fetch-log', {builder_id: this.active_builder_id});
+        if (this.attached_logs.indexOf(this.active_builder_id) === -1) {
+            this.socket.emit('attach-log', {builder_id: this.active_builder_id});
+            this.attached_logs.push(this.active_builder_id);
+        }
     }
 
-    /**
-     *
-     * @param logLine
-     */
-    appendLogLine(logLine) {
-        let logP = document.createElement('p');
-        logP.innerHTML = logLine.trim();
-        let logContainer = document.getElementById('logContainer');
-        logContainer.appendChild(logP);
-        logContainer.scrollTo(0, logContainer.scrollHeight);
-    }
-
-    /**
-     *
-     * @private
-     */
-    _clearLog() {
-        let logContainer = document.getElementById('logContainer');
-        logContainer.innerHTML = '';
+    builderError(message) {
+        Snackbar.render({
+            html: message
+        });
     }
 
 }

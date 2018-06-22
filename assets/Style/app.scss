@@ -7,6 +7,8 @@ body {
     background-color: $material-color-teal-050;
     //noinspection CssOptimizeSimilarProperties
     background-image: url("../Images/bg.jpg");
+    //noinspection CssOptimizeSimilarProperties
+    background-attachment: fixed;
     background-size: 100vw 100vh;
 }
 
@@ -38,6 +40,7 @@ body {
 }
 
 @mixin material-icon-font {
+    //noinspection CssNoGenericFontName
     font-family: 'Material Icons';
     font-weight: normal;
     font-style: normal;
@@ -61,4 +64,55 @@ body {
     /* Support for IE. */
     font-feature-settings: 'liga';
 }
-@import 'index';
+
+#builderContainer {
+    .custom-switch {
+        position: relative;
+        left: 15px;
+        top: 7px;
+    }
+}
+
+#logContainer {
+    width: 100%;
+    background: black;
+    padding: 10px;
+    border-radius: 2px;
+    margin: 25px 0 0 0;
+    color: white;
+    font-family: monospace;
+    font-size: 13px;
+    white-space: pre-wrap;
+    height: 500px;
+    overflow-y: scroll;
+    p {
+        white-space: pre-wrap;
+        margin: 0;
+    }
+}
+
+[data-select-builder] {
+    cursor: pointer;
+    &.opened {
+        @extend .bg-primary;
+        @extend .text-white;
+    }
+    &.active {
+        &:after {
+            content: 'power_off';
+            color: $material-color-green-500;
+        }
+    }
+
+    &:after {
+        @include material-icon-font;
+        position: absolute;
+        right: -90px;
+        top: 13px;
+        content: 'power_off';
+        color: $material-color-red-500;
+    }
+    &.active.opened {
+
+    }
+}

@@ -4,6 +4,7 @@ const path = require('path');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 
+const helmet = require('helmet');
 const app = express();
 app.io = require('socket.io')();
 
@@ -13,6 +14,7 @@ const indexRouter = require('./routes/index')(app);
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'hbs');
 
+app.use(helmet());
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({extended: false}));

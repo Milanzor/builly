@@ -19,7 +19,7 @@
         "active": true
     },
     "c3i": {
-        "path": "/srv/vhosts/dev/c34i.hw/",
+        "path": "/srv/vhosts/dev/c3i.hw/",
         "command": "yarn",
         "install": false,
         "args": [

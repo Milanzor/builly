@@ -1,7 +1,7 @@
-<div class="container">
-    <div class="row">
-        <div class="col-12 col-md-3">
-            {{#if hasBuilders}}
+{{#if hasBuilders}}
+    <div class="container">
+        <div class="row">
+            <div class="col-12 col-md-3">
                 {{#each builders}}
                     <div class="card mb-3 {{#if this.active}}active{{/if}}" id="builderSelector{{@key}}" data-select-builder="{{@key}}">
                         <div class="card-header">
@@ -10,12 +10,8 @@
                     </div>
                 {{/each}}
 
-            {{else}}
-                <h5 class="text-center">It seems you have no builders configured in your config file!</h5>
-            {{/if}}
-        </div>
-        <div class="col-12 col-md-9">
-            {{#if hasBuilders}}
+            </div>
+            <div class="col-12 col-md-9">
                 <div id="builderContainer">
                     <div class="card">
                         <div class="card-header text-center">
@@ -24,7 +20,18 @@
                     </div>
                 </div>
                 <div id="logContainer" class="hidden"></div>
-            {{/if}}
+            </div>
         </div>
     </div>
-</div>
+{{else}}
+    <div class="container">
+        <div class="col-12 col-md-6 offset-md-3">
+
+            <div class="card">
+                <div class="card-header text-center">
+                    <h5 class="text-center">It seems you have no builders configured in your config file!</h5>
+                </div>
+            </div>
+        </div>
+    </div>
+{{/if}}
