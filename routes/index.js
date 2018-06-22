@@ -17,7 +17,7 @@ module.exports = function (app) {
     let activeBuilderId = null;
 
     // Home page
-    router.get('/', function (req, res, next) {
+    router.get('*', function (req, res, next) {
 
 
         // Get all builders and output them

@@ -80,8 +80,9 @@ module.exports = (env) => {
                     use: {
                         loader: "file-loader",
                         options: {
-                            publicPath: './',
-                            name: "[name].[ext]"
+                            publicPath: '/dist/',
+                            name: "[name].[ext]",
+                            context: '/dist/'
                         }
                     },
                 }

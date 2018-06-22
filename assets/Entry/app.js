@@ -3,6 +3,9 @@ import '../Style/app.scss';
 import { AppModule } from "../Lib/AppModule";
 import { Snackbar } from 'daemonite-material-additions';
 import Log from '../Lib/Log';
+import Favicon from '../Lib/Favicon';
+import PurpleFaviconImage from '../Images/purple-favicon.png';
+import RedFaviconImage from '../Images/red-favicon.png';
 
 class BuilboFrontend extends AppModule {
 
@@ -27,11 +30,13 @@ class BuilboFrontend extends AppModule {
 
         this.socket.on('builder-deactivated', (data) => {
             this.builderIsDeactivated(data.builder_id);
+            this.Favicon.blink(RedFaviconImage, 2000);
         });
 
         this.socket.on('builder-log-line', (data) => {
             if (data.builder_id === this.active_builder_id || ('flush' in data && data.flush)) {
                 this.Log.appendLine(data.logLine);
+                this.Favicon.blink(PurpleFaviconImage, 1500);
             }
         });
 
@@ -46,9 +51,11 @@ class BuilboFrontend extends AppModule {
      * @constructor
      */
     DOMReady() {
-
         // Initialize the LogInterface
         this.Log = new Log;
+
+        // Initialize the Favicon changer
+        this.Favicon = new Favicon;
 
         const self = this;
 
@@ -85,6 +92,8 @@ class BuilboFrontend extends AppModule {
 
         // Set the active builder
         this.active_builder_id = data.builder_id;
+
+        document.title = 'Builbo | ' + data.builder_id;
 
         // Render the template inside the builderContainer
         let builderContainer = document.getElementById('builderContainer');
