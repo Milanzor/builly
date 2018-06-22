@@ -22,7 +22,7 @@ Builbo starts a webinterface on port 3000 (default) and allows you to start and 
 
 
 ## Caution
-Builbo spawns child processes on your machine with commands you provide in your builders.json file. If your builders `yarn` or `npm` command is `rm -rf *`, thy will be done.
+Builbo spawns child processes on your machine with commands you provide in your builders.json file. If your builders `yarn` or `npm` command is `rm -rf *` or anything malicious, thy will be done.
 
 [travis-build]: https://api.travis-ci.org/Milanzor/builbo.svg?branch=master
 [travis-build-url]: https://travis-ci.org/Milanzor/builbo
