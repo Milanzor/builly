@@ -8,7 +8,7 @@ const webpack = require('webpack');
 const WebpackWatchedGlobEntries = require('webpack-watched-glob-entries-plugin');
 
 // Css plugin
-const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
 // Config
 module.exports = (env) => {
@@ -25,14 +25,14 @@ module.exports = (env) => {
         devtool: env.env === 'dev' ? 'source-map' : false,
 
         // Entries
-        entry: WebpackWatchedGlobEntries.getEntries(path.resolve(__dirname, 'assets', 'Entry', '**', '*.{js,scss}')),
+        entry: WebpackWatchedGlobEntries.getEntries(path.resolve(__dirname, 'src', 'assets', 'Entry', '**', '*.{js,scss}')),
 
         // Output
         output: {
-            filename: "[name].js",
+            filename: '[name].js',
             path: path.resolve(__dirname, 'public', 'dist'),
-            chunkFilename: "[name].js",
-            publicPath: "/",
+            chunkFilename: '[name].js',
+            publicPath: '/',
         },
 
         // Mode
@@ -55,13 +55,13 @@ module.exports = (env) => {
                     use: [
                         MiniCssExtractPlugin.loader,
                         {
-                            loader: "css-loader",
+                            loader: 'css-loader',
                             options: {
                                 minimize: env.env !== 'dev',
                             },
                         },
                         'postcss-loader',
-                        "sass-loader",
+                        'sass-loader',
                     ]
                 },
 
@@ -69,7 +69,7 @@ module.exports = (env) => {
                 {
                     test: /\.js$/,
                     use: [
-                        "babel-loader",
+                        'babel-loader',
                     ],
 
                 },
@@ -78,10 +78,10 @@ module.exports = (env) => {
                 {
                     test: /\.(eot|svg|ttf|woff|woff2|jpg|jpeg|png|gif)$/,
                     use: {
-                        loader: "file-loader",
+                        loader: 'file-loader',
                         options: {
                             publicPath: '/dist/',
-                            name: "[name].[ext]",
+                            name: '[name].[ext]',
                             context: '/dist/'
                         }
                     },
@@ -96,18 +96,18 @@ module.exports = (env) => {
                 name: 'commons',
             },
             splitChunks: {
-                chunks: "all",
+                chunks: 'all',
                 cacheGroups: {
                     vendors: false,
                     default: false,
                     style: {
                         test: /\.scss$|.css$/,
-                        name: "commons",
+                        name: 'commons',
                         minChunks: 1,
                     },
                     commons: {
-                        name: "commons",
-                        chunks: "all",
+                        name: 'commons',
+                        chunks: 'all',
                         minChunks: 3,
                         enforce: true
                     },
@@ -129,14 +129,14 @@ module.exports = (env) => {
         // Plugins
         plugins: [
             new MiniCssExtractPlugin({
-                filename: "[name].css",
-                chunkFilename: "[name].css"
+                filename: '[name].css',
+                chunkFilename: '[name].css'
             }),
             new WebpackWatchedGlobEntries(),
             new webpack.ProvidePlugin({
-                $: "jquery",
-                jQuery: "jquery",
-                "window.jQuery": "jquery"
+                $: 'jquery',
+                jQuery: 'jquery',
+                'window.jQuery': 'jquery'
             }),
         ]
     };

@@ -26,10 +26,10 @@ const app = express();
 app.io = require('socket.io')();
 
 // Fetch the indexRouter
-const indexRouter = require('./routes/index')(app);
+const indexRouter = require('./src/controllers/index')(app);
 
 // view engine setup
-app.set('views', path.join(__dirname, 'views'));
+app.set('views', path.join(__dirname, 'src', 'views'));
 app.set('view engine', 'hbs');
 
 // All stock express middleware

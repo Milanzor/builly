@@ -12,8 +12,6 @@ builder.initialize(configFile);
 module.exports = function (app) {
     const router = express.Router();
 
-    let activeBuilderId = null;
-
     // Home page
     router.get('*', function (req, res, next) {
 
@@ -36,7 +34,7 @@ module.exports = function (app) {
 
             let builderDetails = builder.getBuilder(data.builder_id);
             app.render(
-                'templates/builder-details',
+                'elements/builder-details',
                 {
                     builderDetails: builderDetails,
                     builder_id: data.builder_id,

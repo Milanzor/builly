@@ -1,6 +1,6 @@
 {
     "project1": {
-        "path": "./test-dirs/project1",
+        "path": "./docs/demo-dirs/project1",
         "command": "yarn",
         "install": false,
         "args": [
@@ -9,7 +9,7 @@
         "active": false
     },
     "project2": {
-        "path": "./test-dirs/project2",
+        "path": "./docs/demo-dirs/project2",
         "command": "yarn",
         "install": false,
         "autostart": true,
