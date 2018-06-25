@@ -30,13 +30,17 @@ class BuilboFrontend extends AppModule {
 
         this.socket.on('builder-deactivated', (data) => {
             this.builderIsDeactivated(data.builder_id);
-            this.Favicon.blink(RedFaviconImage, 2000);
+            if (this.active_builder_id === data.builder_id) {
+                this.Favicon.blink(RedFaviconImage, 2000);
+            }
         });
 
         this.socket.on('builder-log-line', (data) => {
             if (data.builder_id === this.active_builder_id || ('flush' in data && data.flush)) {
                 this.Log.appendLine(data.logLine);
-                this.Favicon.blink(PurpleFaviconImage, 1500);
+                if (data.builder_id === this.active_builder_id) {
+                    this.Favicon.blink(PurpleFaviconImage, 1500);
+                }
             }
         });
 

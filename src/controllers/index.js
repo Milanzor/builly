@@ -59,11 +59,11 @@ module.exports = function (app) {
                     socket.emit('builder-log-line', {logLine: data.logLine, builder_id: builder_id});
                 });
                 builderProcess.on('builder-deactivated', function (data) {
-                    socket.emit('builder-deactivated', {builder_id: data.builder_id});
+                    app.io.sockets.emit('builder-deactivated', {builder_id: data.builder_id});
                 });
             } else {
                 // Builder is deactivated, it failed to start
-                socket.emit('builder-deactivated', {builder_id: data.builder_id});
+                app.io.sockets.emit('builder-deactivated', {builder_id: data.builder_id});
                 socket.emit('builder-log-line', {logLine: 'Error launching builder, please check the Builbo logs', builder_id: builder_id});
             }
 
@@ -95,20 +95,20 @@ module.exports = function (app) {
             // Error check
             if (builderResult === true) {
                 // All is fine
-                socket.emit('builder-activated', {builder_id: data.builder_id});
+                app.io.sockets.emit('builder-activated', {builder_id: data.builder_id});
                 return true;
             }
 
             // Error
             socket.emit('builder-error', {message: builderResult});
-            socket.emit('builder-deactivated', {builder_id: data.builder_id});
+            app.io.sockets.emit('builder-deactivated', {builder_id: data.builder_id});
 
         });
 
         // Deactivate builder socket event
         socket.on('deactivate-builder', function (data) {
             if (builder.deactivateBuilder(data.builder_id)) {
-                socket.emit('builder-deactivated', {builder_id: data.builder_id});
+                app.io.sockets.emit('builder-deactivated', {builder_id: data.builder_id});
             } else {
                 socket.emit('builder-error', {message: 'Failed to deactivate builder. Builder not found.'});
             }
