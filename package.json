@@ -24,6 +24,7 @@
     "hbs": "~4.0.1",
     "helmet": "^3.12.1",
     "http-errors": "~1.6.2",
+    "linerstream": "^0.2.0",
     "material-design-icons-iconfont-only": "^3.0.1",
     "mini-css-extract-plugin": "^0.4.0",
     "minimist": "^1.2.0",

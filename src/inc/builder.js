@@ -5,7 +5,7 @@ const kill = require('tree-kill');
 const Convert = require('ansi-to-html');
 const ansiConverter = new Convert();
 const builderProcesses = {};
-
+const Linerstream = require('linerstream');
 module.exports = {
 
     /**
@@ -171,26 +171,43 @@ module.exports = {
                 log.push(`Finished running yarn install packages`);
             }
 
+            // Make sure our command is only yarn or npm
             if (['yarn', 'npm'].indexOf(builder.command) === -1) {
                 return this.builderError(builder_id, `Only \`yarn\` or \`npm\` are allowed as commands, builder ${builder_id} wants to execute \`${builder.command}\``);
             }
 
             // Spawn the builders process
-            const builderProcess = spawn(builder.command, builder.args, {cwd: builder.path});
+            const builderProcess = spawn(builder.command, builder.args, {cwd: builder.path, shell: true});
+
+            // Setup the newline splitters
+            const outSplitter = new Linerstream();
+            const errSplitter = new Linerstream();
+
+            // Pipe the splitters
+            builderProcess.stdout = builderProcess.stdout.pipe(outSplitter);
+            builderProcess.stderr = builderProcess.stderr.pipe(errSplitter);
+
             // On stdout
             builderProcess.stdout.on('data', (data) => {
-                let logLine = ansiConverter.toHtml(data.toString());
-                log.push(logLine);
-                builderProcess.emit('log', {logLine: logLine});
+                let logLine = ansiConverter.toHtml(data.trim());
+                // No empty log line
+                if (logLine) {
+                    log.push(logLine);
+                    builderProcess.emit('log', {logLine: logLine});
+                }
             });
 
+            // On stderr
             builderProcess.stderr.on('data', (data) => {
-                let logLine = ansiConverter.toHtml(data.toString());
-                log.push(logLine);
-                builderProcess.emit('log', {logLine: logLine});
+                let logLine = ansiConverter.toHtml(data.trim());
+                // No empty log line
+                if (logLine) {
+                    log.push(logLine);
+                    builderProcess.emit('log', {logLine: logLine});
+                }
             });
 
-            //
+            // When the child process closes
             builderProcess.on('close', (code) => {
                 let logLine = `BUILLY: ${builder_id} closed with code ${code}`;
                 log.push(logLine);
@@ -205,7 +222,10 @@ module.exports = {
                 log.push(`BUILLY: 20 minute log rotation`);
             }, 60e3 * 20);
 
+            // Set log
             builderProcess.log = log;
+
+            // Set builderprocess to the holder
             builderProcesses[builder_id] = builderProcess;
         } catch (e) {
 
