@@ -30,7 +30,7 @@ module.exports = (env) => {
         // Output
         output: {
             filename: '[name].js',
-            path: path.resolve(__dirname, 'public', 'dist'),
+            path: path.resolve(__dirname, 'public'),
             chunkFilename: '[name].js',
             publicPath: '/',
         },
@@ -80,9 +80,9 @@ module.exports = (env) => {
                     use: {
                         loader: 'file-loader',
                         options: {
-                            publicPath: '/dist/',
+                            publicPath: '/',
                             name: '[name].[ext]',
-                            context: '/dist/'
+                            context: '/'
                         }
                     },
                 }

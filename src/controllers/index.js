@@ -15,7 +15,6 @@ module.exports = function (app) {
     // Home page
     router.get('*', function (req, res, next) {
 
-
         // Get all builders and output them
         let builders = builder.getBuilders();
         res.render('index', {title: 'Builly', builders: builders, hasBuilders: !!Object.keys(builders).length});
