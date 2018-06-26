@@ -18,7 +18,7 @@ module.exports = function (app) {
 
         // Get all builders and output them
         let builders = builder.getBuilders();
-        res.render('index', {title: 'Builbo', builders: builders, hasBuilders: !!Object.keys(builders).length});
+        res.render('index', {title: 'Builly', builders: builders, hasBuilders: !!Object.keys(builders).length});
     });
 
     // Initial connection
@@ -64,7 +64,7 @@ module.exports = function (app) {
             } else {
                 // Builder is deactivated, it failed to start
                 app.io.sockets.emit('builder-deactivated', {builder_id: data.builder_id});
-                socket.emit('builder-log-line', {logLine: 'Error launching builder, please check the Builbo logs', builder_id: builder_id});
+                socket.emit('builder-log-line', {logLine: 'Error launching builder, please check the Builly logs', builder_id: builder_id});
             }
 
         });

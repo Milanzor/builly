@@ -7,7 +7,7 @@ import Favicon from '../Lib/Favicon';
 import PurpleFaviconImage from '../Images/purple-favicon.png';
 import RedFaviconImage from '../Images/red-favicon.png';
 
-class BuilboFrontend extends AppModule {
+class BuillyFrontend extends AppModule {
 
     /**
      *
@@ -97,7 +97,7 @@ class BuilboFrontend extends AppModule {
         // Set the active builder
         this.active_builder_id = data.builder_id;
 
-        document.title = 'Builbo | ' + data.builder_id;
+        document.title = 'Builly | ' + data.builder_id;
 
         // Render the template inside the builderContainer
         let builderContainer = document.getElementById('builderContainer');
@@ -203,4 +203,4 @@ class BuilboFrontend extends AppModule {
 
 }
 
-new BuilboFrontend();
+new BuillyFrontend();

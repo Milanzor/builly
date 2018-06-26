@@ -5,7 +5,7 @@
  */
 
 var app = require('../app');
-var debug = require('debug')('builbo:server');
+var debug = require('debug')('builly:server');
 var http = require('http');
 
 /**

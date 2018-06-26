@@ -192,7 +192,7 @@ module.exports = {
 
             //
             builderProcess.on('close', (code) => {
-                let logLine = `BUILBO: ${builder_id} closed with code ${code}`;
+                let logLine = `BUILLY: ${builder_id} closed with code ${code}`;
                 log.push(logLine);
                 builderProcess.emit('log', {logLine: logLine});
                 builderProcess.emit('builder-deactivated', {builder_id: builder_id});
@@ -202,7 +202,7 @@ module.exports = {
             // Clear the log every 20 minutes
             setInterval(() => {
                 log = [];
-                log.push(`BUILBO: 20 minute log rotation`);
+                log.push(`BUILLY: 20 minute log rotation`);
             }, 60e3 * 20);
 
             builderProcess.log = log;
