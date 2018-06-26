@@ -36,9 +36,10 @@ class BuillyFrontend extends AppModule {
         });
 
         this.socket.on('builder-log-line', (data) => {
-            if (data.builder_id === this.active_builder_id || ('flush' in data && data.flush)) {
+            let flush = ('flush' in data && data.flush);
+            if (data.builder_id === this.active_builder_id || flush) {
                 this.Log.appendLine(data.logLine);
-                if (data.builder_id === this.active_builder_id) {
+                if (!flush) {
                     this.Favicon.blink(PurpleFaviconImage, 1500);
                 }
             }
