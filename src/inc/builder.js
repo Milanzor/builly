@@ -168,7 +168,7 @@ module.exports = {
             if ('install' in builder && builder.install) {
                 log.push(`Running yarn install for builder ${builder_id}`);
                 spawnSync('yarn', ['install'], {cwd: builder.path, shell: true, stdio: 'inherit'});
-                log.push(`Finished running yarn install packages`);
+                log.push(`Finished running yarn install`);
             }
 
             // Make sure our command is only yarn or npm

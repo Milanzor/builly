@@ -1,5 +1,6 @@
 // Express and Express Router
 const express = require('express');
+const router = express.Router();
 
 // Get command line options
 const argv = require('minimist')(process.argv.slice(2));
@@ -10,10 +11,9 @@ const builder = require('../inc/builder');
 builder.initialize(configFile);
 
 module.exports = function (app) {
-    const router = express.Router();
 
     // Home page
-    router.get('*', function (req, res, next) {
+    router.get('*', function (req, res) {
 
         // Get all builders and output them
         let builders = builder.getBuilders();
