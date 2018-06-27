@@ -1,7 +1,3 @@
-// Express and Express Router
-const express = require('express');
-const router = express.Router();
-
 // Get command line options
 const argv = require('minimist')(process.argv.slice(2));
 const configFile = 'config' in argv ? argv.config : './builders.json';
@@ -11,14 +7,6 @@ const builder = require('../inc/builder');
 builder.initialize(configFile);
 
 module.exports = function (app) {
-
-    // Home page
-    router.get('*', function (req, res) {
-
-        // Get all builders and output them
-        let builders = builder.getBuilders();
-        res.render('index', {title: 'Builly', builders: builders, hasBuilders: !!Object.keys(builders).length});
-    });
 
     // Initial connection
     app.io.on('connection', function (socket) {
@@ -119,6 +107,4 @@ module.exports = function (app) {
         });
 
     });
-
-    return router;
 };
