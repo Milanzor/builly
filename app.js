@@ -23,6 +23,7 @@ const helmet = require('helmet');
 const app = express();
 
 // All stock express middleware
+app.set('view engine', 'html');
 app.use(helmet());
 app.use(logger('dev'));
 app.use(express.json());

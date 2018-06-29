@@ -16,24 +16,15 @@ io.on('connection', function (socket) {
 
     let currentBuilder = null;
 
+    socket.emit('builder-list', builder.getBuilders());
+
     // Get builder details socket event
     socket.on('get-builder-details', function (data) {
-
         // Set current builder
         currentBuilder = data.builder_id;
 
         let builderDetails = builder.getBuilder(data.builder_id);
-        // app.render(
-        //     'elements/builder-details',
-        //     {
-        //         builderDetails: builderDetails,
-        //         builder_id: data.builder_id,
-        //         layout: false,
-        //     },
-        //     function (error, renderedTemplate) {
-        //         socket.emit('builder-details', {renderedTemplate: renderedTemplate, builder_id: data.builder_id, builderDetails: builderDetails});
-        //     }
-        // );
+        socket.emit('builder-details', {builder: builderDetails, builder_id: data.builder_id});
     });
 
     // Attach log socket event
