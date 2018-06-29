@@ -7,61 +7,57 @@
     "start-dev": "node ./bin/www",
     "example": "cross-env yarn start-dev --config ./docs/demo-dirs/example.builders.json",
     "nodemon": "nodemon -i builders.json -i ./docs/demo-dirs/example.builders.json --exec yarn example",
-    "build": "webpack --progress",
-    "build:no-progress": "webpack",
-    "build:prod": "yarn build --env.env=prod",
-    "watch": "yarn build --watch",
-    "watch:prod": "yarn watch --env.env=prod",
-    "travis": "yarn build:prod && yarn example --travistest"
+    "travis": "yarn example --travistest",
+    "serve": "vue-cli-service serve",
+    "build": "vue-cli-service build",
+    "lint": "vue-cli-service lint"
   },
   "dependencies": {
+    "vue": "^2.5.16",
     "ansi-to-html": "^0.6.4",
     "cookie-parser": "~1.4.3",
     "cross-env": "^5.2.0",
     "debug": "~2.6.9",
     "express": "~4.16.0",
-    "express-ws-routes": "^1.1.0",
-    "hbs": "~4.0.1",
     "helmet": "^3.12.1",
     "http-errors": "~1.6.2",
     "linerstream": "^0.2.0",
-    "material-design-icons-iconfont-only": "^3.0.1",
-    "mini-css-extract-plugin": "^0.4.0",
     "minimist": "^1.2.0",
     "morgan": "~1.9.0",
-    "sass-loader": "^7.0.3",
     "socket.io": "^2.1.1",
     "tree-kill": "^1.2.0"
   },
   "devDependencies": {
-    "babel-core": "^6.26.3",
-    "babel-loader": "^7.1.4",
-    "babel-plugin-lodash": "^3.3.4",
-    "babel-plugin-transform-object-rest-spread": "^6.26.0",
-    "babel-preset-env": "^1.7.0",
-    "css-loader": "^0.28.11",
     "daemonite-material": "^4.1.1",
     "daemonite-material-additions": "^1.0.2",
-    "debounce": "^1.1.0",
-    "file-loader": "^1.1.11",
-    "jquery": "^3.3.1",
-    "node-sass": "^4.9.0",
-    "pickadate": "^3.5.6",
-    "postcss-loader": "^2.1.5",
-    "stein": "^1.0.5",
-    "style-loader": "^0.21.0",
-    "webpack": "^4.12.0",
-    "webpack-cli": "^3.0.8",
-    "webpack-watched-glob-entries-plugin": "^2.1.2"
+    "material-design-icons-iconfont-only": "^3.0.1",
+    "@vue/cli-plugin-babel": "^3.0.0-beta.15",
+    "@vue/cli-plugin-eslint": "^3.0.0-beta.15",
+    "@vue/cli-service": "^3.0.0-beta.15",
+    "vue-template-compiler": "^2.5.16"
+  },
+  "eslintConfig": {
+    "root": true,
+    "env": {
+      "node": true
+    },
+    "extends": [
+      "plugin:vue/essential",
+      "eslint:recommended"
+    ],
+    "rules": {},
+    "parserOptions": {
+      "parser": "babel-eslint"
+    }
   },
   "postcss": {
     "plugins": {
-      "autoprefixer": {
-        "browsers": [
-          "last 2 versions",
-          "ie 10"
-        ]
-      }
+      "autoprefixer": {}
     }
-  }
+  },
+  "browserslist": [
+    "> 1%",
+    "last 2 versions",
+    "not ie <= 8"
+  ]
 }

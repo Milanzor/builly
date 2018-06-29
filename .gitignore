@@ -62,3 +62,18 @@ typings/
 
 # next.js build output
 .next
+
+
+.DS_Store
+
+# local env files
+.env.local
+.env.*.local
+
+# Editor directories and files
+.vscode
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw*

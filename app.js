@@ -28,7 +28,7 @@ app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({extended: false}));
 app.use(cookieParser());
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, 'dist')));
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
@@ -46,11 +46,13 @@ app.use(function (err, req, res, next) {
     res.render('error');
 });
 
-// Bind socket.io to app.io
-app.io = require('socket.io')();
-
 // Initialize sockets
-const socketsIndex = require('./src/backend/sockets/index')(app);
+app.io = require('./includes/sockets');
+
+// Send index.html
+app.get('/', function (req, res) {
+    res.sendFile(path.join(__dirname + '/dist/index.html'));
+});
 
 // If we're in a travis test, we'll start the webserver and kill it in 5 seconds so travis knows all is fine
 if ('travistest' in argv) {
