@@ -18,7 +18,7 @@
                     <label class="custom-control-label" v-bind:for="`builderSwitch${currentBuilderId}`"></label>
                 </div>
             </div>
-            <BuilderLog builder-id="currentBuilderId"></BuilderLog>
+            <BuilderLog v-bind:builder_id="currentBuilderId"></BuilderLog>
         </div>
 
     </div>
@@ -52,12 +52,12 @@
         },
         methods: {
             toggleBuilder: function (e) {
+                e.preventDefault();
                 if (e.target.checked) {
                     this.$socket.emit('activate-builder', {builder_id: this.currentBuilderId});
                 } else {
                     this.$socket.emit('deactivate-builder', {builder_id: this.currentBuilderId});
                 }
-                e.preventDefault();
             }
         },
     };

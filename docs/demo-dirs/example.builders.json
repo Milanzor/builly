@@ -3,6 +3,7 @@
         "path": "./docs/demo-dirs/project1",
         "command": "yarn",
         "install": true,
+        "autostart": false,
         "args": [
             "ping"
         ],
@@ -12,7 +13,7 @@
         "path": "./docs/demo-dirs/project2",
         "command": "yarn",
         "install": true,
-        "autostart": true,
+        "autostart": false,
         "args": [
             "ping"
         ],

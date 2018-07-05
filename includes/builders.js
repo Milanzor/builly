@@ -148,14 +148,8 @@ module.exports = {
             // Set active to false
             this.deactivateBuilder(builder_id);
 
-            // Builder the message
-            let errorMessage = `Builder path ${builder.path} for ${builder_id} does not exist`;
-
-            // Log the message to console
-            console.log(errorMessage);
-
-            // Return the message for the frontend
-            return errorMessage;
+            // Build the message
+            return this.builderError(builder_id, `Builder path ${builder.path} for ${builder_id} does not exist`);
         }
 
         //
@@ -224,7 +218,6 @@ module.exports = {
 
             // Set log
             builderProcess.log = log;
-
             // Set builderprocess to the holder
             builderProcesses[builder_id] = builderProcess;
         } catch (e) {

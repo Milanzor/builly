@@ -14,10 +14,19 @@
                 messages: []
             };
         },
+        props: ['builder_id'],
         sockets: {
             'builder-log-line': function (data) {
                 this.messages.push(data.logLine);
             },
+            'builder-activated': function () {
+                this.$socket.emit('attach-log', {builder_id: this.builder_id});
+            },
+            'builder-deactivated': function () {
+            }
+        },
+        ready: function(){
+            this.$socket.emit('attach-log', {builder_id: this.builder_id});
         },
         methods: {},
     };

@@ -30,6 +30,7 @@ io.on('connection', function (socket) {
     // Attach log socket event
     socket.on('attach-log', function (data) {
 
+        console.log(data);
         let builder_id = data.builder_id;
         let builderProcess = builder.getBuilderProcess(builder_id);
 
@@ -45,7 +46,7 @@ io.on('connection', function (socket) {
         } else {
             // Builder is deactivated, it failed to start
             io.sockets.emit('builder-deactivated', {builder_id: data.builder_id});
-            socket.emit('builder-log-line', {logLine: 'Error launching builder, please check the Builly logs', builder_id: builder_id});
+            socket.emit('builder-log-line', {logLine: 'Error attaching log, please check the Builly logs', builder_id: builder_id});
         }
 
     });
