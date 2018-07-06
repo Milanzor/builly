@@ -18,9 +18,6 @@
         components: {
             BuilderList,
             BuilderDetails
-        },
-        data() {
-            return {};
         }
     };
 </script>
@@ -50,8 +47,8 @@
         position: absolute;
         bottom: 0;
         width: 100%;
-        height: 60px; /* Set the fixed height of the footer here */
-        line-height: 60px; /* Vertically center the text there */
+        height: 60px;
+        line-height: 60px;
         color: white;
         font-size: 10px;
         font-weight: bold;

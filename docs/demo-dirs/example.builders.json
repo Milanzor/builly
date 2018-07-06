@@ -17,6 +17,6 @@
         "args": [
             "ping"
         ],
-        "active": true
+        "active": false
     }
 }

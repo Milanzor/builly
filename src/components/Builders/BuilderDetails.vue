@@ -18,7 +18,7 @@
                     <label class="custom-control-label" v-bind:for="`builderSwitch${currentBuilderId}`"></label>
                 </div>
             </div>
-            <BuilderLog v-bind:builder_id="currentBuilderId"></BuilderLog>
+            <BuilderLog v-bind:builder_id="currentBuilderId" v-bind:messages="messages" :key="currentBuilderId"></BuilderLog>
         </div>
 
     </div>
@@ -36,21 +36,49 @@
             return {
                 currentBuilder: null,
                 currentBuilderId: null,
+                messages: [],
             };
         },
         sockets: {
+            /**
+             *
+             * @param data
+             */
             'builder-details': function (data) {
                 this.currentBuilder = data.builder;
                 this.currentBuilderId = data.builder_id;
+                this.$socket.emit('attach-log', {builder_id: this.currentBuilderId});
             },
+
+            /**
+             *
+             */
             'builder-activated': function () {
                 this.currentBuilder.active = true;
             },
+
+            /**
+             *
+             */
             'builder-deactivated': function () {
                 this.currentBuilder.active = false;
-            }
+            },
+
+            /**
+             *
+             * @param data
+             */
+            'builder-log-line': function (data) {
+                this.messages.push(data.logLine);
+            },
         },
+        
         methods: {
+
+            /**
+             *
+             * @param e
+             */
             toggleBuilder: function (e) {
                 e.preventDefault();
                 if (e.target.checked) {

@@ -27,10 +27,13 @@ io.on('connection', function (socket) {
         socket.emit('builder-details', {builder: builderDetails, builder_id: data.builder_id});
     });
 
-    // Attach log socket event
-    socket.on('attach-log', function (data) {
+    let attachLog = function (data) {
 
-        console.log(data);
+        socket.removeListener('attach-log', attachLog);
+
+        // Attach log socket event
+        socket.on('attach-log', attachLog);
+
         let builder_id = data.builder_id;
         let builderProcess = builder.getBuilderProcess(builder_id);
 
@@ -49,7 +52,10 @@ io.on('connection', function (socket) {
             socket.emit('builder-log-line', {logLine: 'Error attaching log, please check the Builly logs', builder_id: builder_id});
         }
 
-    });
+    };
+    
+    // Attach log socket event
+    socket.on('attach-log', attachLog);
 
     // Flush all log lines to the frontend
     socket.on('fetch-log', function (data) {

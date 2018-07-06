@@ -26,11 +26,21 @@
             };
         },
         sockets: {
+
+            /**
+             *
+             * @param builders
+             */
             'builder-list': function (builders) {
                 this.builders = builders;
             },
         },
         methods: {
+            
+            /**
+             *
+             * @param builder_id
+             */
             builderDetails: function (builder_id) {
                 this.$socket.emit('get-builder-details', {builder_id: builder_id});
                 this.currentBuilderId = builder_id;

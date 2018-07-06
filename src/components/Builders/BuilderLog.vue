@@ -1,7 +1,6 @@
 <template>
-
-    <div class="builderLog" v-show="messages.length > 0">
-        <p v-for="message in messages">{{message}}</p>
+    <div class="builderLog" v-if="messages.length > 0">
+        <p v-for="message in messages" v-bind:key="message">{{message}}</p>
     </div>
 </template>
 
@@ -9,26 +8,11 @@
 
     export default {
         name: 'BuilderLog',
-        data() {
-            return {
-                messages: []
-            };
-        },
-        props: ['builder_id'],
-        sockets: {
-            'builder-log-line': function (data) {
-                this.messages.push(data.logLine);
-            },
-            'builder-activated': function () {
-                this.$socket.emit('attach-log', {builder_id: this.builder_id});
-            },
-            'builder-deactivated': function () {
-            }
-        },
-        ready: function(){
-            this.$socket.emit('attach-log', {builder_id: this.builder_id});
-        },
+        props: ['builder_id', 'messages'],
         methods: {},
+        mounted() {
+            console.log(this.builder_id);
+        }
     };
 </script>
 
