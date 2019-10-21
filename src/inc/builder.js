@@ -6,6 +6,7 @@ const Convert = require('ansi-to-html');
 const ansiConverter = new Convert();
 const builderProcesses = {};
 const Linerstream = require('linerstream');
+
 module.exports = {
 
     /**
@@ -172,7 +173,7 @@ module.exports = {
 
             // If we need to yarn install the dependencies
             if ('install' in builder && builder.install) {
-                log.push(`Running yarn install for builder ${builder_id}`);
+                log.push(`Running ${builder.command} install for builder ${builder_id}`);
                 spawnSync(builder.command, ['install'], {cwd: builder.path, shell: true, stdio: 'inherit'});
                 log.push(`Finished running ${builder.command} install packages`);
             }
