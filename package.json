@@ -5,14 +5,14 @@
   "scripts": {
     "start": "cross-env NODE_ENV=production node ./bin/www",
     "start-dev": "node ./bin/www",
-    "example": "cross-env yarn start-dev --config ./docs/demo-dirs/example.builders.json",
-    "nodemon": "nodemon -i builders.json -i ./docs/demo-dirs/example.builders.json --exec yarn example",
+    "example": "cross-env npm run start-dev --config ./docs/demo-dirs/example.builders.json",
+    "nodemon": "nodemon -i builders.json -i ./docs/demo-dirs/example.builders.json --exec npm run example",
     "build": "webpack --progress",
     "build:no-progress": "webpack",
-    "build:prod": "yarn build --env.env=prod",
-    "watch": "yarn build --watch",
-    "watch:prod": "yarn watch --env.env=prod",
-    "travis": "yarn build:prod && yarn example --travistest"
+    "build:prod": "npm run build -- --env.env=prod",
+    "watch": "npm run build -- --watch",
+    "watch:prod": "npm run watch -- --env.env=prod",
+    "travis": "npm run build:prod && npm run example -- --travistest"
   },
   "dependencies": {
     "ansi-to-html": "^0.6.4",
