@@ -164,16 +164,17 @@ module.exports = {
             // Log array
             let log = [];
 
-            // If we need to yarn install the dependencies
-            if ('install' in builder && builder.install) {
-                log.push(`Running yarn install for builder ${builder_id}`);
-                spawnSync('yarn', ['install'], {cwd: builder.path, shell: true, stdio: 'inherit'});
-                log.push(`Finished running yarn install`);
-            }
 
             // Make sure our command is only yarn or npm
             if (['yarn', 'npm'].indexOf(builder.command) === -1) {
-                return this.builderError(builder_id, `Only \`yarn\` or \`npm\` are allowed as commands, builder ${builder_id} wants to execute \`${builder.command}\``);
+                return this.builderError(builder_id, `Only \`yarn\` or \`npm\` are allowed as command`);
+            }
+
+            // If we need to yarn install the dependencies
+            if ('install' in builder && builder.install) {
+                log.push(`Running yarn install for builder ${builder_id}`);
+                spawnSync(builder.command, ['install'], {cwd: builder.path, shell: true, stdio: 'inherit'});
+                log.push(`Finished running ${builder.command} install packages`);
             }
 
             // Spawn the builders process
