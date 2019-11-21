@@ -1,7 +1,6 @@
 [![travis-build][travis-build]][travis-build-url]
 [![david-dm-status][david-dm-status]][david-dm-status-url]
 [![license][license]][license-url]
-[![downloads-week][downloads-week]][downloads-week-url]
 
 # Builly
 Webinterface for your builders/bundlers (e.g. Webpack, Parcel, Rollup, Gulp, etc.).
@@ -32,6 +31,3 @@ Builly spawns child processes on your machine with commands you provide in your 
 
 [license]: https://img.shields.io/github/license/Milanzor/builly.svg
 [license-url]: https://github.com/Milanzor/builly/blob/master/LICENSE
-
-[downloads-week]: https://img.shields.io/npm/dw/builly.svg
-[downloads-week-url]: https://www.npmjs.com/package/builly

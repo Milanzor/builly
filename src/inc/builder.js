@@ -4,7 +4,6 @@ const {spawn, spawnSync} = require('child_process');
 const kill = require('tree-kill');
 const Convert = require('ansi-to-html');
 const ansiConverter = new Convert();
-const builderProcesses = {};
 const Linerstream = require('linerstream');
 
 module.exports = {
@@ -12,27 +11,30 @@ module.exports = {
     /**
      *
      */
-    builderFile: null,
+    builders: {},
+
+    /**
+     *
+     */
+    processes: {},
 
     /**
      *
      * @param configFile
      */
-    initialize: function (configFile) {
-        this.builderFile = path.resolve(configFile);
-        this.deactivateAllBuilders();
+    initialize: function(configFile) {
+        this.builders = require(path.resolve(configFile));
         this.autoStart();
     },
 
     /**
      *
      */
-    autoStart: function () {
-        let builders = this.getBuilders();
+    autoStart: function() {
 
-        Object.keys(builders).forEach((builder_id) => {
-            if (builders.hasOwnProperty(builder_id)) {
-                if ('autostart' in builders[builder_id] && builders[builder_id].autostart) {
+        Object.keys(this.builders).forEach((builder_id) => {
+            if (this.builders.hasOwnProperty(builder_id)) {
+                if ('autostart' in this.builders[builder_id] && this.builders[builder_id].autostart) {
                     this.spawnBuilder(builder_id);
                 }
             }
@@ -41,41 +43,11 @@ module.exports = {
 
     /**
      *
-     * @returns {*}
-     */
-    getBuilders: function () {
-        delete require.cache[this.builderFile];
-
-        try {
-            return require(this.builderFile);
-        } catch (e) {
-            return {};
-        }
-    },
-
-    /**
-     *
      * @param builder_id
      * @returns {*}
      */
-    getBuilder: function (builder_id) {
-        let builders = this.getBuilders();
-
-        if (builder_id in builders) {
-            return builders[builder_id];
-        }
-
-        return false;
-    },
-
-    /**
-     *
-     * @param builders
-     * @returns {boolean}
-     */
-    saveBuilders: function (builders) {
-        fs.writeFileSync(this.builderFile, JSON.stringify(builders, null, 4), {encoding: 'utf8', flag: 'w'});
-        return true;
+    getBuilder: function(builder_id) {
+        return this.builders[builder_id] || false;
     },
 
     /**
@@ -83,11 +55,10 @@ module.exports = {
      * @param builder_id
      * @returns {*|boolean}
      */
-    activateBuilder: function (builder_id) {
-        let builders = this.getBuilders();
-        if (builder_id in builders) {
-            builders[builder_id].active = true;
-            return this.saveBuilders(builders);
+    activateBuilder: function(builder_id) {
+        if (builder_id in this.builders) {
+            this.builders[builder_id].active = true;
+            return true;
         }
     },
 
@@ -96,51 +67,37 @@ module.exports = {
      * @param builder_id
      * @returns {*}
      */
-    deactivateBuilder: function (builder_id) {
-        let builders = this.getBuilders();
-        if (builder_id in builders) {
+    deactivateBuilder: function(builder_id) {
+        if (builder_id in this.builders) {
 
-            if (builder_id in builderProcesses) {
-                kill(builderProcesses[builder_id].pid);
-                builderProcesses[builder_id].log = [];
-                delete builderProcesses[builder_id];
+            // Kill the process
+            if (builder_id in this.processes) {
+                kill(this.processes[builder_id].pid);
+                this.processes[builder_id].log = [];
+                delete this.processes[builder_id];
             }
 
-            builders[builder_id].active = false;
-            return this.saveBuilders(builders);
+            // Mark as inactive
+            this.builders[builder_id].active = false;
+
+            return true;
         }
         return false;
     },
 
     /**
      *
-     * @returns {*}
-     */
-    deactivateAllBuilders: function () {
-        const builders = this.getBuilders();
-
-        if (Object.keys(builders).length === 0) {
-            return this.saveBuilders({});
-        }
-
-        Object.keys(builders).forEach((builder_id) => {
-            this.deactivateBuilder(builder_id);
-        });
-
-        return true;
-    },
-
-    /**
-     *
      * @param builder_id
      * @returns {*}
      */
-    spawnBuilder: function (builder_id) {
+    spawnBuilder: function(builder_id) {
 
+        // Mark as active
         if (!this.activateBuilder(builder_id)) {
             return false;
         }
 
+        // Get the builder
         const builder = this.getBuilder(builder_id);
 
         // The path doesnt exist
@@ -164,7 +121,6 @@ module.exports = {
 
             // Log array
             let log = [];
-
 
             // Make sure our command is only yarn or npm
             if (['yarn', 'npm'].indexOf(builder.command) === -1) {
@@ -228,7 +184,7 @@ module.exports = {
             builderProcess.log = log;
 
             // Set builderprocess to the holder
-            builderProcesses[builder_id] = builderProcess;
+            this.processes[builder_id] = builderProcess;
         } catch (e) {
 
             // Error
@@ -244,7 +200,7 @@ module.exports = {
      * @param builder_id
      * @param line
      */
-    builderLogLine: function (builder_id, line) {
+    builderLogLine: function(builder_id, line) {
 
     },
 
@@ -254,7 +210,7 @@ module.exports = {
      * @param message
      * @returns {*}
      */
-    builderError: function (builder_id, message) {
+    builderError: function(builder_id, message) {
         this.deactivateBuilder(builder_id);
         console.log(message);
         return message;
@@ -265,8 +221,8 @@ module.exports = {
      * @param builder_id
      * @returns {boolean}
      */
-    getBuilderProcess: function (builder_id) {
-        return builder_id in builderProcesses ? builderProcesses[builder_id] : false;
+    getBuilderProcess: function(builder_id) {
+        return builder_id in this.processes ? this.processes[builder_id] : false;
     }
 
 };
