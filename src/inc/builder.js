@@ -123,8 +123,8 @@ module.exports = {
             let log = [];
 
             // Make sure our command is only yarn or npm
-            if (['yarn', 'npm'].indexOf(builder.command) === -1) {
-                return this.builderError(builder_id, `Only \`yarn\` or \`npm\` are allowed as command`);
+            if (['yarn', 'npm', 'composer'].indexOf(builder.command) === -1) {
+                return this.builderError(builder_id, `Only \`yarn\`, \`npm\` or \`composer\` are allowed as command`);
             }
 
             // If we need to yarn install the dependencies
