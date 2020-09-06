@@ -31,7 +31,7 @@
     "morgan": "~1.9.1",
     "sass-loader": "^7.0.3",
     "socket.io": "^2.1.1",
-    "tree-kill": "^1.2.0"
+    "tree-kill": "^1.2.2"
   },
   "devDependencies": {
     "babel-core": "^6.26.3",
