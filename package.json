@@ -30,7 +30,7 @@
     "minimist": "^1.2.0",
     "morgan": "~1.9.1",
     "sass-loader": "^7.0.3",
-    "socket.io": "^2.1.1",
+    "socket.io": "^2.4.0",
     "tree-kill": "^1.2.0"
   },
   "devDependencies": {
